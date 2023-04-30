@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Tahoma Raffstore Controller</string>
+    <string name="username_hint">Enter Username</string>
+    <string name="password_hint">Enter Password</string>
+    <string name="pin_hint">Enter Gateway Pin</string>
+    <string name="field_empty_error">Field must not be empty</string>
+    <string name="pin_invalid_error">Entered pin is not valid</string>
+    <string name="navigation_bar_raffstores">Raffstores</string>
+    <string name="navigation_bar_groups">Groups</string>
+    <string name="navigation_bar_schedules">Schedules</string>
+    <string name="favourite_widget_description">Widget allowing you to control your groups and devices</string>
+</resources>
