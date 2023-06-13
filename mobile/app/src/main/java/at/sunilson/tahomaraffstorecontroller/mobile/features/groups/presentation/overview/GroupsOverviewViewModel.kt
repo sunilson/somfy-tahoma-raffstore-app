@@ -1,35 +1,35 @@
 package at.sunilson.tahomaraffstorecontroller.mobile.features.groups.presentation.overview
 
 import androidx.lifecycle.viewModelScope
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Execution
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ExecutionActionGroup
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.StopActionGroupExecution
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.DeleteActionGroup
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.FavouriteGroupUseCase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.GetActionGroups
+import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.GetActionGroupsUseCase
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.GetFavouriteGroups
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.Execution
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.LocalExecutionActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.ExecuteAction
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.ExecuteActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.GetExecutions
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.RefreshExecutions
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.StopActionGroupExecution
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ExecuteLocalApiAction
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ExecuteActionGroup
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ObserveRemoteExecutionsUseCase
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.RefreshExecutions
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.viewmodel.BaseViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 class GroupsOverviewViewModel(
-    private val getActionGroups: GetActionGroups,
-    private val getExecutions: GetExecutions,
+    private val getActionGroupsUseCase: GetActionGroupsUseCase,
+    private val getExecutions: ObserveRemoteExecutionsUseCase,
     private val refreshExecutions: RefreshExecutions,
     private val executeActionGroup: ExecuteActionGroup,
-    private val executeAction: ExecuteAction,
+    private val executeLocalApiAction: ExecuteLocalApiAction,
     private val deleteActionGroup: DeleteActionGroup,
     private val favouriteGroupUseCase: FavouriteGroupUseCase,
     private val getFavouriteGroups: GetFavouriteGroups
 ) : BaseViewModel<GroupsOverviewViewModel.State, GroupsOverviewViewModel.SideEffect>(State()) {
     sealed interface SideEffect
     data class State(
-        val actionGroups: ImmutableList<LocalExecutionActionGroup> = emptyList<LocalExecutionActionGroup>().toImmutableList(),
+        val actionGroups: ImmutableList<ExecutionActionGroup> = emptyList<ExecutionActionGroup>().toImmutableList(),
         val executions: ImmutableList<Execution> = emptyList<Execution>().toImmutableList(),
         val favouriteGroups: ImmutableList<String> = emptyList<String>().toImmutableList()
     )
@@ -41,19 +41,19 @@ class GroupsOverviewViewModel(
         observeFavouriteGroups()
     }
 
-    fun onExecuteActionGroupClicked(actionGroup: LocalExecutionActionGroup) {
+    fun onExecuteActionGroupClicked(actionGroup: ExecutionActionGroup) {
         viewModelScope.launch { executeActionGroup(actionGroup.id) }
     }
 
-    fun onStopExecutionClicked(actionGroup: LocalExecutionActionGroup) {
-        viewModelScope.launch { executeAction(StopActionGroupExecution(actionGroup)) }
+    fun onStopExecutionClicked(actionGroup: ExecutionActionGroup) {
+        viewModelScope.launch { executeLocalApiAction(ExecuteLocalApiAction.Params(StopActionGroupExecution(actionGroup))) }
     }
 
-    fun onDeleteActionGroupClicked(actionGroup: LocalExecutionActionGroup) {
+    fun onDeleteActionGroupClicked(actionGroup: ExecutionActionGroup) {
         viewModelScope.launch { deleteActionGroup(actionGroup.id) }
     }
 
-    fun onFavouriteClicked(actionGroup: LocalExecutionActionGroup) {
+    fun onFavouriteClicked(actionGroup: ExecutionActionGroup) {
         viewModelScope.launch { favouriteGroupUseCase(actionGroup.id) }
     }
 
@@ -75,7 +75,7 @@ class GroupsOverviewViewModel(
 
     private fun observeActionGroups() {
         viewModelScope.launch {
-            getActionGroups(Unit).collect { actionGroups ->
+            getActionGroupsUseCase(Unit).collect { actionGroups ->
                 reduce { it.copy(actionGroups = actionGroups.toImmutableList()) }
             }
         }

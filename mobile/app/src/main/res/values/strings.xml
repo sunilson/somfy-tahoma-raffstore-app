@@ -8,5 +8,6 @@
     <string name="navigation_bar_raffstores">Raffstores</string>
     <string name="navigation_bar_groups">Groups</string>
     <string name="navigation_bar_schedules">Schedules</string>
+    <string name="navigation_bar_services">Services</string>
     <string name="favourite_widget_description">Widget allowing you to control your groups and devices</string>
 </resources>

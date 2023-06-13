@@ -1,19 +1,19 @@
 package at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.preview
 
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.ApiDevice
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.data.models.LocalApiDevice
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
 import java.util.UUID
 
 object DevicePreviewUtils {
 
     fun default(label: String = UUID.randomUUID().toString()) = Device(
-        ApiDevice(
+        LocalApiDevice(
             deviceURL = UUID.randomUUID().toString(),
             label = label,
             available = true,
             synced = true,
             type = 0,
-            states = listOf(ApiDevice.State.StringState(0, "core:StatusState", "available"))
+            states = listOf(LocalApiDevice.State.StringState(0, "core:StatusState", "available"))
         )
     )
 

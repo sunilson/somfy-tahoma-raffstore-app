@@ -6,9 +6,9 @@ import androidx.security.crypto.MasterKeys
 import at.sunilson.tahomaraffstorecontroller.mobile.features.authentication.di.authenticationModule
 import at.sunilson.tahomaraffstorecontroller.mobile.features.deeplink.di.deepLinkModule
 import at.sunilson.tahomaraffstorecontroller.mobile.features.discovery.di.discoveryModule
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.di.localApiModule
 import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.di.overviewModule
 import at.sunilson.tahomaraffstorecontroller.mobile.features.schedules.di.schedulesModule
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.di.apiModule
 import at.sunilson.tahomaraffstorecontroller.mobile.main.MainViewModel
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -20,7 +20,7 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalSerializationApi::class)
 val mainModule = module {
-    includes(localApiModule)
+    includes(apiModule)
     includes(authenticationModule)
     includes(discoveryModule)
     includes(overviewModule)

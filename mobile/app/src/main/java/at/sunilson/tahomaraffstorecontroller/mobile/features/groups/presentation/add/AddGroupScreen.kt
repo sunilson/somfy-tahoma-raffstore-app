@@ -17,10 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.presentation.add.selectdropdown.DeviceSelectionDropdown
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.ActionToExecute
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ActionToExecute
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
 import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.presentation.overview.RaffstoreListItem
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.components.AutoFocusTextField
+import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.components.ConfirmTextDialog
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -38,17 +39,13 @@ fun AddGroupScreen(
 ) {
 
     if (showSaveDialog) {
-        AlertDialog(
-            onDismissRequest = { onSaveDialogCancelled() },
-            title = { Text("Choose group name") },
-            text = {
-                AutoFocusTextField(
-                    value = saveDialogInputValue,
-                    onValueChange = { onSaveDialogInputChanged(it) },
-                    placeholder = { Text("Enter name") })
-            },
-            confirmButton = { Button(onClick = { onSaveDialogSubmitted() }) { Text("Save") } },
-            dismissButton = { Button(onClick = { onSaveDialogCancelled() }) { Text("Cancel") } }
+        ConfirmTextDialog(
+            title = "Choose group name",
+            hint = "Enter name",
+            text = saveDialogInputValue,
+            onTextChanged = onSaveDialogInputChanged,
+            onConfirm = onSaveDialogSubmitted,
+            onDismiss = onSaveDialogCancelled
         )
     }
 

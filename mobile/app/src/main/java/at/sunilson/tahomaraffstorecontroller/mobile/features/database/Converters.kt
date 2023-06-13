@@ -1,10 +1,10 @@
 package at.sunilson.tahomaraffstorecontroller.mobile.features.database
 
 import androidx.room.TypeConverter
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.ApiExecutionActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.Execution
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.LocalExecutionActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ExecutionActionGroup
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.data.models.LocalApiExecution
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.data.models.LocalApiExecutionActionGroup
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,42 +37,42 @@ class Converters : KoinComponent {
     }
 
     @TypeConverter
-    fun executionFromString(json: String): Execution {
+    fun executionFromString(json: String): LocalApiExecution {
         return this.json.decodeFromString(json)
     }
 
     @TypeConverter
-    fun executionToString(execution: Execution): String {
-        return this.json.encodeToString(execution)
+    fun executionToString(localApiExecution: LocalApiExecution): String {
+        return this.json.encodeToString(localApiExecution)
     }
 
     @TypeConverter
-    fun executionActionGroupFromString(json: String): ApiExecutionActionGroup {
+    fun executionActionGroupFromString(json: String): LocalApiExecutionActionGroup {
         return this.json.decodeFromString(json)
     }
 
     @TypeConverter
-    fun executionActionGroupToString(apiExecutionActionGroup: ApiExecutionActionGroup): String {
-        return this.json.encodeToString(apiExecutionActionGroup)
+    fun executionActionGroupToString(localApiExecutionActionGroup: LocalApiExecutionActionGroup): String {
+        return this.json.encodeToString(localApiExecutionActionGroup)
     }
 
     @TypeConverter
-    fun localExecutionActionGroupFromString(json: String): LocalExecutionActionGroup {
+    fun localExecutionActionGroupFromString(json: String): ExecutionActionGroup {
         return this.json.decodeFromString(json)
     }
 
     @TypeConverter
-    fun localExecutionActionGroupToString(localExecutionActionGroup: LocalExecutionActionGroup): String {
-        return this.json.encodeToString(localExecutionActionGroup)
+    fun localExecutionActionGroupToString(executionActionGroup: ExecutionActionGroup): String {
+        return this.json.encodeToString(executionActionGroup)
     }
 
     @TypeConverter
-    fun actionsFromString(json: String): List<ApiExecutionActionGroup.Action> {
+    fun actionsFromString(json: String): List<LocalApiExecutionActionGroup.Action> {
         return this.json.decodeFromString(json)
     }
 
     @TypeConverter
-    fun actionsToString(actions: List<ApiExecutionActionGroup.Action>): String {
+    fun actionsToString(actions: List<LocalApiExecutionActionGroup.Action>): String {
         return this.json.encodeToString(actions)
     }
 }

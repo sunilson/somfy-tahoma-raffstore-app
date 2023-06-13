@@ -1,12 +1,12 @@
 package at.sunilson.tahomaraffstorecontroller.mobile.features.deeplink.domain
 
 import android.net.Uri
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.DeviceAction
 import at.sunilson.tahomaraffstorecontroller.mobile.features.authentication.data.QUERY_EXECUTE_ACTION_GROUP_ID
 import at.sunilson.tahomaraffstorecontroller.mobile.features.authentication.data.QUERY_EXECUTE_DEVICE_URL
 import at.sunilson.tahomaraffstorecontroller.mobile.features.discovery.domain.DiscoverTahomaBoxUseCase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.ExecuteAction
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.ExecuteActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.DeviceAction
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ExecuteLocalApiAction
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ExecuteActionGroup
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.domain.UseCase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filter
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 class HandleDeeplinksUseCase(
     private val discoverTahomaBoxUseCase: DiscoverTahomaBoxUseCase,
     private val executeActionGroup: ExecuteActionGroup,
-    private val executeAction: ExecuteAction
+    private val executeLocalApiAction: ExecuteLocalApiAction
 ) : UseCase<Uri, Unit>() {
 
     override suspend fun doWork(params: Uri) {
@@ -28,7 +28,12 @@ class HandleDeeplinksUseCase(
         }
 
         if (params.path?.contains("action/execute/device/my") == true) {
-            executeAction(DeviceAction.MyPosition(params.getQueryParameter(QUERY_EXECUTE_DEVICE_URL)!!))
+            executeLocalApiAction(
+                ExecuteLocalApiAction.Params(
+                    remoteChildId = null,
+                    actionToExecute = DeviceAction.MyPosition(params.getQueryParameter(QUERY_EXECUTE_DEVICE_URL)!!)
+                )
+            )
         }
     }
 

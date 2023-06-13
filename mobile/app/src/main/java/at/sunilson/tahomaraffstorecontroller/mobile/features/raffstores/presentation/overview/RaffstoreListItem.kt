@@ -34,9 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.ActionToExecute
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.DeviceAction
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ActionToExecute
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.DeviceAction
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.domain.TimeUtils
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.preview.DevicePreviewUtils
 import kotlin.math.roundToInt
@@ -72,7 +72,7 @@ fun RaffstoreListItem(
         // Only accept new remote values 1 second after user changed it to reduce jumping
         if (TimeUtils.getCurrentMillis() - lastOrientationChange < 1000) return@LaunchedEffect
 
-        orientation = device.slateOrientation ?: return@LaunchedEffect
+        orientation = device.slateOrientation
     }
 
     LaunchedEffect(device.closedPercentage) {

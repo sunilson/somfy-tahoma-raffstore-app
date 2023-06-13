@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable

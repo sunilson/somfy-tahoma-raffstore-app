@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -14,7 +15,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,22 +24,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.Execution
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.LocalExecutionActionGroup
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Execution
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ExecutionActionGroup
 import kotlinx.collections.immutable.ImmutableList
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupsOverviewScreen(
-    actionGroups: ImmutableList<LocalExecutionActionGroup>,
+    actionGroups: ImmutableList<ExecutionActionGroup>,
     executions: ImmutableList<Execution>,
     favouriteGroups: ImmutableList<String>,
-    onItemClicked: (LocalExecutionActionGroup) -> Unit,
-    onDeleteActionGroupClicked: (LocalExecutionActionGroup) -> Unit,
-    onStopExecutionClicked: (LocalExecutionActionGroup) -> Unit,
-    onExecuteActionGroupClicked: (LocalExecutionActionGroup) -> Unit,
+    onItemClicked: (ExecutionActionGroup) -> Unit,
+    onDeleteActionGroupClicked: (ExecutionActionGroup) -> Unit,
+    onStopExecutionClicked: (ExecutionActionGroup) -> Unit,
+    onExecuteActionGroupClicked: (ExecutionActionGroup) -> Unit,
     onAddButtonClick: () -> Unit,
-    onFavouriteClicked: (LocalExecutionActionGroup) -> Unit
+    onFavouriteClicked: (ExecutionActionGroup) -> Unit
 ) {
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = onAddButtonClick) {
@@ -47,46 +46,19 @@ fun GroupsOverviewScreen(
         }
     }) {
         LazyColumn(modifier = Modifier.padding(it)) {
-            actionGroups.forEach { actionGroup ->
-                item(key = actionGroup.id) {
-                    val executing = executions.any { execution -> execution.actionGroup.label == actionGroup.label }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onItemClicked(actionGroup) }
-                            .padding(12.dp)
-                    ) {
-                        Text(actionGroup.label, modifier = Modifier.weight(1f))
-                        IconButton(onClick = { onFavouriteClicked(actionGroup) }) {
-                            if (favouriteGroups.contains(actionGroup.id)) {
-                                Icon(Icons.Default.Favorite, contentDescription = "Favorite")
-                            } else {
-                                Icon(Icons.Default.FavoriteBorder, contentDescription = "Favorite")
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(6.dp))
-                        IconButton(
-                            onClick = { onDeleteActionGroupClicked(actionGroup) }
-                        ) { Icon(Icons.Default.Delete, contentDescription = "Stop execution") }
-                        Spacer(modifier = Modifier.width(6.dp))
-                        IconButton(
-                            onClick = {
-                                if (executing) {
-                                    onStopExecutionClicked(actionGroup)
-                                } else {
-                                    onExecuteActionGroupClicked(actionGroup)
-                                }
-                            }
-                        ) {
-                            if (executing) {
-                                Icon(Icons.Default.Stop, contentDescription = "Stop execution")
-                            } else {
-                                Icon(Icons.Default.PlayArrow, contentDescription = "Start execution")
-                            }
-                        }
-                    }
-                }
+            itemsIndexed(items = actionGroups, key = { _, group -> group.id }) { index, actionGroup ->
+                val executing = executions.any { execution -> execution.actionGroupLabel == actionGroup.label }
+                GroupListItem(
+                    actionGroup = actionGroup,
+                    favouriteGroups = favouriteGroups,
+                    executing = executing,
+                    showDivider = index != actionGroups.lastIndex,
+                    onExecuteActionGroupClicked = onExecuteActionGroupClicked,
+                    onStopExecutionClicked = onStopExecutionClicked,
+                    onDeleteActionGroupClicked = onDeleteActionGroupClicked,
+                    onFavouriteClicked = onFavouriteClicked,
+                    onItemClicked = onItemClicked
+                )
             }
         }
     }

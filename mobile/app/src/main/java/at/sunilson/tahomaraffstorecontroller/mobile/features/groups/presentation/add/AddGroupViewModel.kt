@@ -2,13 +2,13 @@ package at.sunilson.tahomaraffstorecontroller.mobile.features.groups.presentatio
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.LocalExecutionActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.ActionToExecute
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
-import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.CreateActionGroup
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ActionToExecute
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.DeviceAction
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ExecutionActionGroup
+import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.UpsertActionGroup
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.domain.GetActionGroup
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.GetRaffstoresUseCase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.DeviceAction
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ObserveRemoteDevicesUseCase
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.viewmodel.BaseViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -18,9 +18,9 @@ import timber.log.Timber
 
 class AddGroupViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val getRaffstoresUseCase: GetRaffstoresUseCase,
+    private val getRaffstoresUseCase: ObserveRemoteDevicesUseCase,
     private val getActionGroupUseCase: GetActionGroup,
-    private val createActionGroup: CreateActionGroup,
+    private val upsertActionGroup: UpsertActionGroup,
 ) : BaseViewModel<AddGroupViewModel.State, AddGroupViewModel.SideEffect>(State()) {
 
     private val groupId: String? = savedStateHandle["groupId"]
@@ -32,7 +32,6 @@ class AddGroupViewModel(
                 getActionGroup(groupId)
             }
         }
-
     }
 
     fun onSaveClicked() {
@@ -51,8 +50,8 @@ class AddGroupViewModel(
         val label = state.value.saveDialogInputValue
         viewModelScope.launch {
             reduce { it.copy(showSaveDialog = false, saveDialogInputValue = "") }
-            createActionGroup(
-                CreateActionGroup.Params(
+            upsertActionGroup(
+                UpsertActionGroup.Params(
                     label = label,
                     devicesInTargetState = state.value.devices.toList().filter { state.value.selectedDevices.contains(it.id) },
                     id = state.value.group?.id
@@ -97,7 +96,7 @@ class AddGroupViewModel(
                     state.copy(
                         devices = state.devices.toMutableList().apply {
                             result.targetDeviceStates.forEach { targetDevice ->
-                                val index = indexOf(targetDevice)
+                                val index = indexOfFirst { device -> device.id == targetDevice.id }
                                 if (index != -1) set(index, targetDevice)
                             }
                         }.toImmutableList(),
@@ -123,11 +122,13 @@ class AddGroupViewModel(
             val indexOfDevice = state.devices.indexOfFirst { it.id == deviceId }
             val mutableDevices = state.devices.toMutableList()
             mutableDevices[indexOfDevice] = block(mutableDevices[indexOfDevice])
-            Timber.d("""
+            Timber.d(
+                """
                 Mutated device $deviceId
                 Orientation: ${mutableDevices[indexOfDevice].slateOrientation}
                 Closure: ${mutableDevices[indexOfDevice].closedPercentage}
-            """.trimIndent())
+            """.trimIndent()
+            )
             state.copy(devices = mutableDevices.toImmutableList())
         }
     }
@@ -141,6 +142,6 @@ class AddGroupViewModel(
         val selectedDevices: ImmutableList<String> = emptyList<String>().toImmutableList(),
         val saveDialogInputValue: String = "",
         val showSaveDialog: Boolean = false,
-        val group: LocalExecutionActionGroup? = null
+        val group: ExecutionActionGroup? = null
     )
 }

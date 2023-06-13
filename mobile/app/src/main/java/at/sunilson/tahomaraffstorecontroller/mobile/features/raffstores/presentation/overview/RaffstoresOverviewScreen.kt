@@ -17,10 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.Execution
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.ActionToExecute
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.StopAllExecutions
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.data.models.LocalApiExecution
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ActionToExecute
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Execution
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.StopAllExecutions
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.components.AutoFocusTextField
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.preview.DevicePreviewUtils
 import kotlinx.collections.immutable.ImmutableList

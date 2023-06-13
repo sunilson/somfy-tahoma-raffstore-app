@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".main.TahomaControllerApplication"
@@ -77,5 +78,16 @@
                 android:resource="@xml/favourites_widget_info" />
 
         </receiver>
+
+        <service
+            android:name=".features.services.TahomaForegroundService"
+            android:foregroundServiceType="dataSync"
+            android:stopWithTask="true" />
+
+        <service
+            android:name=".features.services.SchedulesForegroundService"
+            android:foregroundServiceType="dataSync"
+            android:stopWithTask="true" />
+
     </application>
 </manifest>

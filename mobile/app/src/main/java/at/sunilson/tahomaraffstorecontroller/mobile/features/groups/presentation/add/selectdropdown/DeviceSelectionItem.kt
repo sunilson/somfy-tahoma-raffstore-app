@@ -13,12 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DeviceSelectionItem(device: Device, selected: Boolean, deviceClicked: (Device) -> Unit) {
-
     AnimatedContent(targetState = selected, label = "") { target ->
         Row(
             modifier = Modifier

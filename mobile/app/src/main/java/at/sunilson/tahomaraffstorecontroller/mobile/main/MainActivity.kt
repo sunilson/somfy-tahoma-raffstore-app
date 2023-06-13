@@ -24,7 +24,9 @@ import at.sunilson.tahomaraffstorecontroller.mobile.features.authentication.Auth
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.presentation.add.AddGroupDestination
 import at.sunilson.tahomaraffstorecontroller.mobile.features.groups.presentation.overview.GroupsOverviewDestination
 import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.presentation.overview.RaffstoresOverviewDestination
+import at.sunilson.tahomaraffstorecontroller.mobile.features.schedules.presentation.add.AddScheduleDestination
 import at.sunilson.tahomaraffstorecontroller.mobile.features.schedules.presentation.overview.SchedulesOverviewDestination
+import at.sunilson.tahomaraffstorecontroller.mobile.features.services.presentation.ServicesOverviewDestination
 import at.sunilson.tahomaraffstorecontroller.mobile.features.widget.presentation.FavouritesWidgetWorker
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.TahomaRaffstoreTheme
 import kotlinx.coroutines.launch
@@ -87,9 +89,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = "raffstores",
                         modifier = Modifier.padding(it)
                     ) {
+                        navigation(startDestination = "services/overview", route = "services") {
+                            composable("services/overview") { ServicesOverviewDestination(navController) }
+                        }
                         navigation(startDestination = "schedules/overview", route = "schedules") {
                             composable("schedules/overview") { SchedulesOverviewDestination(navigator = navController) }
-                        }
+                            composable("schedules/add?scheduleId={scheduleId}", arguments = listOf(navArgument("scheduleId") {
+                                type = NavType.StringType
+                                nullable = true
+                                defaultValue = null
+                            })) { AddScheduleDestination(navigator = navController) }                        }
                         navigation(startDestination = "groups/overview", route = "groups") {
                             composable("groups/overview") { GroupsOverviewDestination(navigator = navController) }
                             composable("groups/add?groupId={groupId}", arguments = listOf(navArgument("groupId") {

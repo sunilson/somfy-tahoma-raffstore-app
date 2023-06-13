@@ -4,7 +4,7 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import androidx.security.crypto.EncryptedSharedPreferences
 import at.sunilson.tahomaraffstorecontroller.mobile.features.authentication.data.GATEWAY_PIN_KEY
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.SaveTahomaBoxUrl
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.SaveTahomaBoxUrl
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.domain.FlowUseCase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow

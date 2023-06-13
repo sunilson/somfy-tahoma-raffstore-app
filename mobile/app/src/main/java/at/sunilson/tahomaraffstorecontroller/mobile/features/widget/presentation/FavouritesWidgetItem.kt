@@ -30,8 +30,8 @@ import timber.log.Timber
 fun FavouritesWidgetItem(entry: FavouriteWidgetEntry) {
     Row(
         modifier = GlanceModifier
-            .fillMaxWidth()
             .wrapContentHeight()
+            .fillMaxWidth()
             .clickable(actionRunCallback<FavouritesWidgetItemAction>(actionParametersOf(Key<FavouriteWidgetEntry>("entry") to entry)))
             .padding(20.dp)
     ) {

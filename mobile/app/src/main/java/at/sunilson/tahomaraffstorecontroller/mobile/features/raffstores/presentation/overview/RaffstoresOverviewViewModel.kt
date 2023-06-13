@@ -1,15 +1,16 @@
 package at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.presentation.overview
 
 import androidx.lifecycle.viewModelScope
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.data.models.Execution
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.ExecuteAction
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.GetExecutions
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.GetRaffstoresUseCase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.LoadDevicesUseCase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.ActionToExecute
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.ActionToExecute
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Device
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.Execution
 import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.domain.FavouriteDeviceUseCase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.domain.GetFavouriteDevices
+import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.domain.GetFavouriteDeviceIdsUseCase
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ExecuteLocalApiAction
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ExecuteRemoteActionUseCase
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ObserveRemoteExecutionsUseCase
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.LoadAndSyncDevicesUseCase
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.ObserveRemoteDevicesUseCase
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.presentation.viewmodel.BaseViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -19,12 +20,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class RaffstoresOverviewViewModel(
-    private val getRaffstoresUseCase: GetRaffstoresUseCase,
-    private val getExecutions: GetExecutions,
-    private val executeAction: ExecuteAction,
+    private val observeRemoteDevicesUseCase: ObserveRemoteDevicesUseCase,
+    private val getExecutions: ObserveRemoteExecutionsUseCase,
+    private val executeRemoteActionUseCase: ExecuteRemoteActionUseCase,
     private val favouriteDeviceUseCase: FavouriteDeviceUseCase,
-    private val getFavouriteDevices: GetFavouriteDevices,
-    private val loadDevicesUseCase: LoadDevicesUseCase
+    private val getFavouriteDeviceIdsUseCase: GetFavouriteDeviceIdsUseCase,
+    private val loadAndSyncDevicesUseCase: LoadAndSyncDevicesUseCase
 ) : BaseViewModel<RaffstoresOverviewViewModel.State, RaffstoresOverviewViewModel.SideEffect>(State()) {
 
     sealed interface SideEffect
@@ -52,7 +53,7 @@ class RaffstoresOverviewViewModel(
     }
 
     fun onItemClicked(action: ActionToExecute) {
-        viewModelScope.launch { executeAction(action) }
+        viewModelScope.launch { executeRemoteActionUseCase(action) }
     }
 
     fun onFavouriteClicked(device: Device) {
@@ -72,14 +73,14 @@ class RaffstoresOverviewViewModel(
     fun onRefreshRequested() {
         viewModelScope.launch {
             reduce { it.copy(loading = true) }
-            loadDevicesUseCase(Unit)
+            loadAndSyncDevicesUseCase(Unit)
             reduce { it.copy(loading = false) }
         }
     }
 
     private fun collectDevices() {
         viewModelScope.launch {
-            getRaffstoresUseCase(Unit).collect { devices ->
+            observeRemoteDevicesUseCase(Unit).collect { devices ->
                 reduce { it.copy(devices = devices.toImmutableList(), filteredDevices = devices.filterBySearchTerm(it.searchTerm).toImmutableList()) }
             }
         }
@@ -103,8 +104,8 @@ class RaffstoresOverviewViewModel(
 
     private fun collectFavouriteDevices() {
         viewModelScope.launch {
-            getFavouriteDevices(Unit).collect { favouriteDevices ->
-                reduce { it.copy(favouriteDevices = favouriteDevices.map { it.id }.toImmutableList()) }
+            getFavouriteDeviceIdsUseCase(Unit).collect { favouriteDevices ->
+                reduce { it.copy(favouriteDevices = favouriteDevices.toImmutableList()) }
             }
         }
     }

@@ -1,8 +1,8 @@
 package at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.domain
 
+import at.sunilson.tahomaraffstorecontroller.mobile.entities.FavouriteDevice
 import at.sunilson.tahomaraffstorecontroller.mobile.features.database.TahomaLocalDatabase
-import at.sunilson.tahomaraffstorecontroller.mobile.features.localapi.domain.UpdateShortcuts
-import at.sunilson.tahomaraffstorecontroller.mobile.features.raffstores.data.models.FavouriteDevice
+import at.sunilson.tahomaraffstorecontroller.mobile.features.tahomaapi.domain.UpdateShortcuts
 import at.sunilson.tahomaraffstorecontroller.mobile.features.widget.presentation.FavouritesWidgetUtils
 import at.sunilson.tahomaraffstorecontroller.mobile.shared.domain.UseCase
 

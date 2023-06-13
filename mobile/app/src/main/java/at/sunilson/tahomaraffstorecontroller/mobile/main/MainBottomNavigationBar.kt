@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -54,4 +55,5 @@ enum class BottomBarItem(
     Raffstores("raffstores", Icons.Default.Home, R.string.navigation_bar_raffstores),
     Groups("groups", Icons.Default.List, R.string.navigation_bar_groups),
     Schedules("schedules", Icons.Default.Timelapse, R.string.navigation_bar_schedules),
+    Services("services", Icons.Default.SyncAlt, R.string.navigation_bar_services),
 }
